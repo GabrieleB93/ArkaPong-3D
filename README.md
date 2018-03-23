@@ -10,7 +10,7 @@ Little game that combines Pong and Arkanoid. Made with Three.js
   <p> <li> Improve the GUI 
   <p> <li> Add a complete compatibility with phones </ul>
   
- <h2> Goals
+ <h2> Goals</h2>
  <p>  <ul > <li>Motion controlls with phone </ul>
   
   <h2>Demo</h2>
