@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+
+        body {
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: hidden;
+        }
+        /** {cursor: none;}*/
+        .B {
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            display: inline-block;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            border: none;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 28px;
+            padding: 20px;
+            width: 200px;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin: 5px;
+
+        }
+        .B span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.2s;
+        }
+
+       .B span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.2s;
+        }
+
+        .B:hover span {
+            padding-right: 25px;
+        }
+
+        .B:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+
+        #tmp{
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: absolute;
+            top: 41%;
+            left: 40%;
+
+        }
+
+        #title{
+            position: absolute;
+            top: 5%;
+            left: 25%;
+            color: #FFFFFF;
+            font-size: 700%;
+            font-family: "Lucida Console", Monaco, serif;
+        }
+
+    </style>
+</head>
+<body>
+
+<button class="B" id ="one" style="vertical-align:middle" onclick="load('cd');"> <span>Start</span> </button>
+<!--<button class="B" id="tmp" style="vertical-align:middle" onclick="load();"> Mobile</button>-->
+<h2 id="title">ArkaPong 3D</h2>
+
+<script src="Text.js"></script>
+<script src="three.js"></script>
+<script src="Ball.js"></script>
+<script src="Sound.js"></script>
+<script src="Pad.js"></script>
+<script >
+
+
+    function load(cd) {
+        if(cd ==="cd"){
+            let script = document.createElement('script');
+            script.src = "PCArkaPong.js";
+            [].forEach.call(document.querySelectorAll('.B'), function (el) {
+                el.style.visibility = 'hidden';
+            });
+            document.getElementById("title").style.visibility = 'hidden';
+            document.head.appendChild(script);
+        }
+    }
+
+
+</script>
+
+
+</body>
+</html>
