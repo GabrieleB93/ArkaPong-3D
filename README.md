@@ -14,7 +14,7 @@ Little game that combines Pong and Arkanoid. Made with Three.js
  <p>  <ul > <li>Motion controlls with phone </ul>
   
   <h2>Demo</h2>
-  <p><a href="www.gbarreca.com">Here</a> a live demo
+  <p><a href="http://www.gbarreca.com">Here</a> a live demo
   
 <h2>Schreenshoot</h1>
 <img src="images/ArkaPong2.png" width="500">
