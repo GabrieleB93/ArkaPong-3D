@@ -7,12 +7,12 @@ Little game that combines Pong and Arkanoid. Made with Three.js
 
 <h1>Features </h1>
   <p> <ul> <li> Play with Dekstop Browser or Mobile Browser (better if Chrome) 
-  <p> <li> Pay with mouse, keyboard (wasd), finger, motion control
+  <p> <li> Pay with mouse, keyboard (wasd), finger, motion control </ul>
     
- <h2> To fix</h2>
- <p>  <ul > <li>Improve Motion controlls  </ul>
- <p> <li> No Audio on Mozilla
-  
+ <h2> To fix or to improve</h2>
+ <p>  <ul > <li> Motion controls  
+ <p> <li> No Audio on Mozilla </ul>
+   
   <h2>Demo</h2>
   <p><a href="http://www.gbarreca.com">Here</a> a live demo
   
