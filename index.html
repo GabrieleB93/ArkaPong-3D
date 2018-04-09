@@ -1,105 +1,193 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="HandheldFriendly" content="true" />
+<meta name="MobileOptimized" content="320" />
 <head>
     <style>
+
 
         body {
             background-color: rgba(0, 0, 0, 0.95);
             overflow: hidden;
         }
-        /** {cursor: none;}*/
+
+        html, body, #canvas {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: default;
+        }
+
+
         .B {
             position: absolute;
-            top: 30%;
-            left: 40%;
-            display: inline-block;
-            border-radius: 4px;
+            top: 100%;
+            left: 35%;
             background-color: #4CAF50;
-            border: none;
-            color: #FFFFFF;
+            color: white;
+            border: 2px solid #4CAF50;
+            padding: 16px 32px;
             text-align: center;
-            font-size: 28px;
-            padding: 20px;
-            width: 200px;
-            transition: all 0.5s;
-            cursor: pointer;
-            margin: 5px;
-
-        }
-        .B span {
-            cursor: pointer;
+            text-decoration: none;
             display: inline-block;
-            position: relative;
-            transition: 0.2s;
+            border-radius: 8px;
+            font-size: 24%;
+            margin: 4px 2px;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            cursor: pointer;
+            z-index: 3;
+
         }
-
-       .B span:after {
-            content: '\00bb';
-            position: absolute;
-            opacity: 0;
-            top: 0;
-            right: -20px;
-            transition: 0.2s;
-        }
-
-        .B:hover span {
-            padding-right: 25px;
-        }
-
-        .B:hover span:after {
-            opacity: 1;
-            right: 0;
-        }
-
-        #tmp{
-            opacity: 0.6;
-            cursor: not-allowed;
-            position: absolute;
-            top: 41%;
-            left: 40%;
-
+        .B:hover {
+            background-color: transparent;
         }
 
         #title{
+
             position: absolute;
             top: 5%;
-            left: 25%;
+            left: 15%;
             color: #FFFFFF;
-            font-size: 700%;
-            font-family: "Lucida Console", Monaco, serif;
+            font-size: 300%;
+            font-family: " Lucida Console", Monaco, serif;
         }
 
+        #two:hover{
+            background-color: transparent;
+            border: 2px solid rgba(195, 195, 195, 0.3);
+            color: white;
+        }
+
+        #two {
+            position: absolute;
+            font-size: 15px;
+            padding: 10px 10px;
+            background-color: transparent;
+            color: rgba(184, 184, 184, 0.53);
+            border: 2px solid rgba(52, 52, 52, 0.88);
+            top: 70%;
+            left: 75%;
+        }
+
+        #three{
+            font-size: 24%;
+            top: 200%;
+        }
+
+        #four{
+            position: absolute;
+            font-size: 15px;
+            padding: 10px 15px;
+            background-color: transparent;
+            color: rgba(184, 184, 184, 0.53);
+            border: 2px solid rgba(52, 52, 52, 0.88);
+            top: 70%;
+            left: 5%;
+            visibility: hidden;
+        }
+
+        canvas{
+            position: absolute;
+        }
     </style>
 </head>
 <body>
 
-<button class="B" id ="one" style="vertical-align:middle" onclick="load('cd');"> <span>Start</span> </button>
-<!--<button class="B" id="tmp" style="vertical-align:middle" onclick="load();"> Mobile</button>-->
-<h2 id="title">ArkaPong 3D</h2>
+<button id ="two" class="B"  onclick="requestFullScreen()">FS</button>
+<button id ="four" class="B"  onclick="Recalibrate()">Recalibrate</button>
 
-<script src="Text.js"></script>
-<script src="three.js"></script>
-<script src="Ball.js"></script>
-<script src="Sound.js"></script>
-<script src="Pad.js"></script>
+<h2 id="title">ArkaPong 3D
+    <button class="B" id ="one" style="vertical-align: middle" onclick="load('pc');"> <span>Start</span> </button>
+    <button class="B" id ="three" style=" visibility: hidden" onclick="load('mobile');"> <span>Start with motion (Beta)</span> </button>
+</h2>
+
+<canvas id="canvas"></canvas>
+
+<script src="script/Text.js"></script>
+<script src="script/three.js"></script>
+<script src="script/Ball.js"></script>
+<script src="script/Sound.js"></script>
+<script src="script/Pad.js"></script>
+
 <script >
 
 
-    function load(cd) {
-        if(cd ==="cd"){
-            let script = document.createElement('script');
-            script.src = "PCArkaPong.js";
-            [].forEach.call(document.querySelectorAll('.B'), function (el) {
-                el.style.visibility = 'hidden';
-            });
-            document.getElementById("title").style.visibility = 'hidden';
-            document.head.appendChild(script);
-        }
+    let start = false;
+    let move = false;
+    let checkMobile;
+
+    // device detection
+    if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
+        || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) {
+        checkMobile = true;
+
+    }else{
+        checkMobile = false;
     }
 
+    if(checkMobile===false){
+        document.getElementById('title').style.left = "35%";
+        document.getElementById('title').style.fontSize = "700%";
+        document.getElementById('two').style.left = "95%";
+        document.getElementById('two').style.top = "93%";
+//        document.getElementById("four").style.visibility = 'hidden';
 
+    }else{
+        document.getElementById("three").style.visibility = 'visible';
+    }
+
+    function load(cd) {
+
+        if(checkMobile){
+            requestFullScreen();
+        }
+
+        let script = document.createElement('script');
+        script.src = "script/PCArkaPong.js";
+
+        start = true;
+        if(cd ==="mobile"){
+            move = true;
+            document.getElementById("four").style.visibility = 'visible';
+        }
+
+        document.getElementById("title").style.visibility = 'hidden';
+        document.getElementById("one").style.visibility = 'hidden';
+        document.getElementById("three").style.visibility = 'hidden';
+        document.head.appendChild(script);
+
+    }
+
+    function requestFullScreen() {
+
+        let el = document.body;
+        let requestMethod = el.requestFullScreen || el.webkitRequestFullScreen
+            || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+        if (requestMethod) {
+
+            // Native full screen.
+            requestMethod.call(el);
+
+        } else if (typeof window.ActiveXObject !== "undefined") {
+
+            // Older IE.
+            let wscript = new ActiveXObject("WScript.Shell");
+
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+        document.getElementById("two").style.display = 'none';
+        screen.orientation.lock('landscape');
+
+    }
 </script>
-
-
 </body>
 </html>
